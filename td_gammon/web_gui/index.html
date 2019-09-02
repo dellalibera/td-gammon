@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+    <meta charset="UTF-8">
+    <title>Backgammon GUI</title>
+    <style>
+        #canvas-container {
+            width: 80%;
+            text-align: center;
+            margin: auto;
+        }
+        textarea {
+            float: left;
+            position: absolute;
+            width:25%;
+            height: 600px;
+            resize:None;
+            font-size: 10px;
+        }
+        h1 {
+            width: 100%;
+            text-align: center;
+            margin: auto;
+        }
+        #hint {
+            right: 0;
+            position: absolute;
+            text-align: left;
+            width:25%;
+            resize:None;
+            height:600px;
+            overflow:scroll;
+        }
+        li {list-style-type: none;}
+        button {
+            width: 300px;
+            text-align: left;
+            font-size: 15px;
+        }
+        button:hover:enabled { 
+            background: lightgreen; 
+        }
+        
+        textarea {
+            color: black;
+        }
+
+
+    </style>
+</head>
+
+<body onload="init()">
+    <h1>BACKGAMMON</h1>
+    <textarea id='history' readonly disabled></textarea>
+    
+    <div id='hint'>
+    </div>
+    
+    <div id='canvas-container'>
+
+        <canvas id="boardCanvas" width="700" height="600" style="border:1px solid #000000;"></canvas> 
+        <p>Player: WHITE</p>
+        <label for="action-choice">Choose an action:</label>
+        <input list="actions" id="action-choice" name="action-choice" value="" size="35" maxlength="35" oninput="check_input()"/>
+        <datalist id="actions">
+            <option value="start">
+        </datalist>
+        <button onclick="execute_action()" id='button-execute'>EXECUTE</button>
+    </div>
+</body>
+
+<script>
+    let c = document.getElementById("boardCanvas");
+    let ctx = c.getContext("2d");
+    let width = c.width;
+    let height = c.height;
+    let border = 50;
+
+    let half_board_width = (width - 4 * border) / 2
+    let half_board_height = (height - 2 * border)
+    let half_board_rigth_start = 3 * border + half_board_width
+
+    // POINTs
+    let point_width = half_board_width / 6
+    let point_heigth = height * 4.5 / 10
+    ctx.font = "25px Arial";
+
+
+    let COLOR1 = '#ff704d'
+    let COLOR2 = '#ffeecc'
+
+    // CHECKERS
+    let radius = point_width / 2
+
+
+    function init(){
+        draw()
+        document.getElementById("action-choice").value = ''
+        document.getElementById("history").value = 'LOG\n'
+
+        document.getElementById("hint").innerHTML = 'Hint\n'
+        var node = document.createElement("li"); 
+        var buttonNode = document.createElement('button');
+        buttonNode.innerHTML = 'start';
+        buttonNode.onclick = function() { 
+            document.getElementById("action-choice").value = buttonNode.innerHTML;
+            execute_action()
+        };
+        node.appendChild(buttonNode); 
+        document.getElementById("hint").appendChild(node);
+        document.getElementById("button-execute").disabled = true;
+
+    }
+
+    // https://stackoverflow.com/questions/30022728/perform-action-when-clicking-html5-datalist-option
+    function check_input(){
+        let val = document.getElementById("action-choice").value;
+        let actions = document.getElementById("actions").childNodes;
+        for (let i = 0; i < actions.length; i++) {
+            if (actions[i].value === val) {
+                document.getElementById("button-execute").disabled = false;
+                break;
+            }
+            document.getElementById("button-execute").disabled = true;
+
+        }
+    }
+    function draw() {
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+
+        // background canvas
+        ctx.fillStyle = "#ffcc99";
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        // LEFT HALF BOARD
+        ctx.fillStyle = "#009933";
+        ctx.fillRect(border, border, half_board_width, half_board_height);
+
+        // RIGHT HALF BOARD
+        ctx.fillStyle = "#009933";
+        ctx.fillRect(half_board_rigth_start, border, half_board_width, half_board_height);
+
+        // LINE in the middle
+        ctx.beginPath();
+        ctx.moveTo(width / 2, 0);
+        ctx.lineTo(width / 2, height);
+        ctx.stroke()
+
+        // BORDER LEFT HALF BOARD
+        ctx.beginPath();
+        ctx.moveTo(border, border);
+        ctx.lineTo(border + half_board_width, border);
+        ctx.lineTo(border + half_board_width, height - border);
+        ctx.lineTo(border, height - border);
+        ctx.lineTo(border, border);
+        ctx.stroke()
+
+        // BORDER RIGHT HALF BOARD
+        ctx.beginPath();
+        ctx.moveTo(half_board_rigth_start, border);
+        ctx.lineTo(half_board_rigth_start + half_board_width, border);
+        ctx.lineTo(half_board_rigth_start + half_board_width, height - border);
+        ctx.lineTo(half_board_rigth_start, height - border);
+        ctx.lineTo(half_board_rigth_start, border);
+        ctx.stroke()
+
+        // TOP LEFT POINTS
+        for (i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.moveTo(border + i * point_width, border);
+            ctx.lineTo(border + i * point_width + (point_width / 2), point_heigth);
+            ctx.lineTo(border + (i + 1) * point_width, border);
+            if (i % 2 == 0) {
+                ctx.fillStyle = COLOR1;
+            } else {
+                ctx.fillStyle = COLOR2;
+            }
+            ctx.fill();
+            ctx.stroke()
+            ctx.fillStyle = 'black';
+            ctx.fillText(12 + i, border + i * point_width + 5, border - 5);
+        }
+
+        // TOP RIGHT POINTS
+        for (i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.moveTo(half_board_rigth_start + i * point_width, border);
+            ctx.lineTo(half_board_rigth_start + i * point_width + (point_width / 2), point_heigth);
+            ctx.lineTo(half_board_rigth_start + (i + 1) * point_width, border);
+            ctx.stroke();
+            if (i % 2 == 0) {
+                ctx.fillStyle = COLOR1;
+            } else {
+                ctx.fillStyle = COLOR2;
+            }
+            ctx.fill();
+            ctx.stroke()
+            ctx.fillStyle = 'black';
+            ctx.fillText(18 + i, half_board_rigth_start + i * point_width + 5, border - 5);
+        }
+
+        // BOTTOM LEFT POINTS
+        for (i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.moveTo(border + i * point_width, height - border);
+            ctx.lineTo(border + i * point_width + (point_width / 2), height - point_heigth);
+            ctx.lineTo(border + (i + 1) * point_width, height - border);
+            ctx.stroke();
+            if (i % 2 == 0) {
+                ctx.fillStyle = COLOR2;
+            } else {
+                ctx.fillStyle = COLOR1;
+            }
+            ctx.fill();
+            ctx.stroke()
+            ctx.fillStyle = 'black';
+            if (11 - i < 10){
+                ctx.fillText(11 - i, border + i * point_width + 15, height - border + 25);
+            } else {
+                ctx.fillText(11 - i, border + i * point_width + 5, height - border + 25);
+            }
+        }
+
+        // BOTTOM RIGHT POINTS
+        for (i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.moveTo(half_board_rigth_start + i * point_width, height - border);
+            ctx.lineTo(half_board_rigth_start + i * point_width + (point_width / 2), height - point_heigth);
+            ctx.lineTo(half_board_rigth_start + (i + 1) * point_width, height - border);
+            if (i % 2 == 0) {
+                ctx.fillStyle = COLOR2;
+            } else {
+                ctx.fillStyle = COLOR1;
+            }
+            ctx.fill();
+            ctx.stroke()
+            ctx.fillStyle = 'black';
+            ctx.fillText(5 - i, half_board_rigth_start + i * point_width + 15, height - border + 25);
+
+        }
+    }
+
+    function draw_board(board, bar, off) {
+        draw()
+        if (board != null) {
+            board.forEach((data, point) => {
+                checkers = data[0]
+                player = data[1]
+
+                if (player != null) {
+                    text_color = 'black'
+                    checkers_color = 'white'
+
+                    if (player == 1) {
+                        text_color = 'white'
+                        checkers_color = 'black'
+                    }
+                    // BOTTOM RIGHT
+                    if (0 <= point && point < 6) {
+                        let coord_start = { 'x': half_board_rigth_start, 'y': height - border }
+                        let shift = coord_start.x + point_width * (5 - point)
+                        for (let i = 0; i < checkers; i++) {
+                            ctx.beginPath();
+                            ctx.arc(shift + radius, coord_start.y - radius - 2 * i * radius, radius, 0, 2 * Math.PI);
+                            ctx.fillStyle = checkers_color;
+                            ctx.fill();
+                            ctx.strokeStyle = text_color;
+                            ctx.stroke()
+                            if (i >= 4) {
+                                ctx.fillStyle = text_color;
+                                ctx.fillText(checkers, shift + radius - 10, coord_start.y - radius - 2 * i * radius + 10);
+                                break;
+                            }
+                        }
+                    }
+
+                    // BOTTOM LEFT
+                    if (6 <= point && point < 12) {
+                        let coord_start = { 'x': border, 'y': height - border }
+                        let shift = coord_start.x + point_width * (11 - point)
+                        for (let i = 0; i < checkers; i++) {
+                            ctx.beginPath();
+                            ctx.arc(shift + radius, coord_start.y - radius - 2 * i * radius, radius, 0, 2 * Math.PI);
+                            ctx.fillStyle = checkers_color;
+                            ctx.fill();
+                            ctx.strokeStyle = text_color;
+                            ctx.stroke()
+                            if (i >= 4) {
+                                ctx.fillStyle = text_color;
+                                ctx.fillText(checkers, shift + radius - 10, coord_start.y - radius - 2 * i * radius + 10);
+                                break;
+                            }
+                        }
+                    }
+
+                    // TOP LEFT
+                    if (12 <= point && point < 18) {
+                        let coord_start = { 'x': border, 'y': border }
+                        let shift = coord_start.x + point_width * (point - 12)
+                        for (let i = 0; i < checkers; i++) {
+                            ctx.beginPath();
+                            ctx.arc(shift + radius, coord_start.y + radius + 2 * i * radius, radius, 0, 2 * Math.PI);
+                            ctx.fillStyle = checkers_color;
+                            ctx.fill();
+                            ctx.strokeStyle = text_color;
+                            ctx.stroke()
+                            if (i >= 4) {
+                                ctx.fillStyle = text_color;
+                                ctx.fillText(checkers, shift + radius - 10, coord_start.y + radius + 2 * i * radius + 10);
+                                break;
+                            }
+                        }
+                    }
+
+                    // TOP RIGHT
+                    if (18 <= point && point < 24) {
+                        let coord_start = { 'x': half_board_rigth_start, 'y': border }
+                        let shift = coord_start.x + point_width * (point - 18)
+                        for (let i = 0; i < checkers; i++) {
+                            ctx.beginPath();
+                            ctx.arc(shift + radius, coord_start.y + radius + 2 * i * radius, radius, 0, 2 * Math.PI);
+                            ctx.fillStyle = checkers_color;
+                            ctx.fill();
+                            ctx.strokeStyle = text_color;
+                            ctx.stroke()
+                            if (i >= 4) {
+                                ctx.fillStyle = text_color;
+                                ctx.fillText(checkers, shift + radius - 10, coord_start.y + radius + 2 * i * radius + 10);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        )}
+        draw_bar_off(bar, off)
+    }
+
+    function draw_bar_off(bar, off){
+        // BAR
+        let bar_white = bar[0]
+        let bar_black = bar[1]            
+
+        var coord_start = { 'x': width / 2, 'y': border }
+
+        for (let i = 0; i < bar_white; i++) {
+
+            ctx.beginPath();
+            ctx.arc(coord_start.x, coord_start.y + radius + 2 * i * radius, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.stroke()
+            if (i >= 3) {
+                ctx.fillStyle = 'black';
+                ctx.fillText(bar_white, coord_start.x - 8, coord_start.y + radius + 2 * i * radius + 10);
+                break;
+            }
+
+        }
+
+        var coord_start = { 'x': width / 2, 'y': height - border }
+        
+        for (let i = 0; i < bar_black; i++) {
+
+            ctx.beginPath();
+            ctx.arc(coord_start.x, coord_start.y - radius - 2 * i * radius, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.stroke()
+            if (i >= 3) {
+                ctx.fillStyle = 'white';
+                ctx.fillText(bar_black, coord_start.x - 8, coord_start.y - radius - 2 * i * radius + 10);
+                break;
+            }
+
+        }
+
+        // OFF
+        let off_white = off[0]
+        let off_black = off[1]      
+        var coord_start = { 'x': width - border, 'y': border }
+        for (let i = 0; i < off_black; i++) {
+            ctx.beginPath();
+            ctx.arc(coord_start.x + radius, coord_start.y + radius + 2 * i * radius, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.stroke()
+            if (i >= 3) {
+                ctx.fillStyle = 'white';
+                ctx.fillText(off_black, coord_start.x + radius - 15, coord_start.y + radius + 2 * i * radius + 10);
+                break;
+            }
+        }
+        
+        var coord_start = { 'x': width - border, 'y': height - border }
+        for (let i = 0; i < off_white; i++) {
+            ctx.beginPath();
+            ctx.arc(coord_start.x + radius, coord_start.y - radius - 2 * i * radius, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.stroke()
+            if (i >= 3) {
+                ctx.fillStyle = 'black';
+                ctx.fillText(off_white, coord_start.x + radius - 10, coord_start.y - radius - 2 * i * radius + 10);
+                break;
+            }
+        }
+    }
+
+    function execute_action() {
+        document.getElementById("button-execute").disabled = true;
+        let xhr = new XMLHttpRequest();
+        let url = location.origin;
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let json_data = JSON.parse(xhr.responseText);
+                update(json_data)
+            }
+        };
+        let command = document.getElementById('action-choice').value
+        let data = {'command':command}
+        xhr.send(JSON.stringify(data));
+    }
+
+    function update(data){
+        console.log(data['message'])
+
+        actions = data['actions']
+        state = data['state']
+
+        board = state[0]
+        bar = state[1]
+        off = state[2]
+        
+        // UPDATE DataList, History and Hint
+        document.getElementById("history").value = document.getElementById("history").value + '\n' +data['message']
+        document.getElementById("action-choice").value = ''
+        
+        // https://stackoverflow.com/questions/17929356/html-datalist-values-from-array-in-javascript
+        // https://stackoverflow.com/questions/37155230/how-to-add-dynamic-lists-in-javascript-not-jquery
+        // https://stackoverflow.com/questions/9170670/how-do-i-set-textarea-scroll-bar-to-bottom-as-a-default
+        
+        options = ''
+        document.getElementById("hint").innerHTML = 'Hint\n'
+        actions.forEach(action => {
+            moves = 'move '
+            if (Array.isArray(action)){
+                action.forEach(move => {
+                    moves += '(' + move.join('/') + ')';
+                    moves += ','
+                });
+                options += '<option value="'+moves.slice(0, -1)+'" />';
+
+                var node = document.createElement("li");  
+                var buttonNode = document.createElement('button');
+                buttonNode.innerHTML = moves.slice(0, -1);
+                buttonNode.onclick = function() { 
+                    document.getElementById("action-choice").value = buttonNode.innerHTML;
+                    execute_action()
+                };
+                node.appendChild(buttonNode); 
+                document.getElementById("hint").appendChild(node); 
+
+            } else {
+                options += '<option value="'+action+'" />';
+
+                var node = document.createElement("li"); 
+                var buttonNode = document.createElement('button');
+                buttonNode.innerHTML = action;
+                buttonNode.onclick = function() { 
+                    document.getElementById("action-choice").value = buttonNode.innerHTML;
+                    execute_action()
+                };
+                node.appendChild(buttonNode); 
+                document.getElementById("hint").appendChild(node);
+            } 
+        });
+        document.getElementById('actions').innerHTML = options;
+        
+        var history = document.getElementById('history');
+        history.scrollTop = history.scrollHeight;
+
+        // UPDATE BOARD
+        draw_board(board, bar, off)
+    }
+
+
+    let input = document.getElementById("action-choice");
+    input.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("button-execute").click();
+        }
+    });
+</script>
+
+
+</html>

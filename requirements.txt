@@ -1,0 +1,5 @@
+gym
+torch>=1.2.0
+torchvision>=0.4.0
+tb-nightly
+requests
