@@ -8,16 +8,15 @@
 # Table of Contents
 - [Features](#features)
 - [Installation](#installation)
+- [How to interact with GNU Backgammon using Python Script?](#howto)
 - [Backgammon OpenAI Gym Environment](#env)
 - [Bibliography, sources of inspiration, related works](#biblio)
 - [License](#license)
 ---
 ## <a name="features"></a>Features
-This repository contains a PyTorch implementation of TD-Gammon [1].
-
-The trained agents can be tested against an open source implementation of the Backgammon game, [GNU Backgammon](https://www.gnu.org/software/gnubg/).
-
-It is also possible to play against a trained agent via web gui.
+- PyTorch implementation of TD-Gammon [1].
+- Test the trained agents against an open source implementation of the Backgammon game, [GNU Backgammon](https://www.gnu.org/software/gnubg/).
+- Play against a trained agent via web gui
 
 ---
 ## <a name="installation"></a>Installation
@@ -48,6 +47,37 @@ or
 (tdgammon) $ pip install -r requirements.txt
 ```
 
+### GNU Backgammon
+To play against `gnubg`, you have to install [`gnubg`](https://www.gnu.org/software/gnubg/).  
+**NOTE**: I installed `gnubg` on `Ubuntu 18.04` (running on a Virtual Machine), with `Python 2.7` (see next section to see how to interact with GNU Backgammon).  
+#### On Ubuntu:
+```
+sudo apt-get install gnubg
+```
+---
+## <a name="howto"></a>How to interact with GNU Backgammon using Python Script?
+I created a simple `http server` that runs on the Guest machine (Ubuntu), that receives commands and interacts with the `gnubg` program.  
+In this way, it's possible to send commands from the Host machine (in my case `MacOS`).  
+<br>
+The file `bridge.py` should be executed on the Guest Machine (the machine where `gnubg` is installed).
+#### On Ubuntu:
+```
+gnubg -t -p /path/to/bridge.py
+```
+It runs the `gnubg` with the command-line instead of using the graphical interface (`-t`) and evaluates a Python code file and exits (`-p`).  
+For a list of parameters of `gnubg`, run `gnubg --help`.   
+<br>
+The python script `bridge.py` creates an `http server`, running on `localhost:8001`.  
+If you want to modify the host and the port, change the following line in `bridge.py`:
+```python
+if __name__ == "__main__":
+    HOST = 'localhost' # <-- YOUR HOST HERE
+    PORT = 8001  # <-- YOUR PORT HERE
+    run(host=HOST, port=PORT)
+```
+The file `backgammon/td_gammon/gnubg/gnubg_backgammon.py` sends messages/commands to `gnubg` and parses the response.
+
+---
 ## <a name="env"></a>Backgammon OpenAI Gym Environment
 For a detailed description of the environment: [`gym-backgammon`](https://github.com/dellalibera/gym-backgammon).
 

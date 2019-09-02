@@ -1,6 +1,5 @@
 import os
 import gym
-import numpy as np
 
 from agents import TDAgent, HumanAgent, TDAgentGNU, RandomAgent, evaluate_agents
 from gnubg.gnubg_backgammon import GnubgInterface, GnubgEnv, evaluate_vs_gnubg
