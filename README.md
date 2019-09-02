@@ -56,7 +56,7 @@ sudo apt-get install gnubg
 ```
 ---
 ## <a name="howto"></a>How to interact with GNU Backgammon using Python Script?
-I created a simple `http server` that runs on the Guest machine (Ubuntu), that receives commands and interacts with the `gnubg` program.  
+I used an `http server` that runs on the Guest machine (Ubuntu), to receive commands and interact with the `gnubg` program.  
 In this way, it's possible to send commands from the Host machine (in my case `MacOS`).  
 <br>
 The file `bridge.py` should be executed on the Guest Machine (the machine where `gnubg` is installed).
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     PORT = 8001  # <-- YOUR PORT HERE
     run(host=HOST, port=PORT)
 ```
-The file `backgammon/td_gammon/gnubg/gnubg_backgammon.py` sends messages/commands to `gnubg` and parses the response.
+The file `td_gammon/gnubg/gnubg_backgammon.py` sends messages/commands to `gnubg` and parses the response.
 
 ---
 ## <a name="env"></a>Backgammon OpenAI Gym Environment
