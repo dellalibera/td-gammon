@@ -115,7 +115,6 @@ gnubg -t -p /path/to/bridge.py
 Then run (to play vs `gnubg` at intermediate level for 100 games):
 ```
 (tdgammon) $ python /path/to/main.py evaluate --episodes 50 --hidden_units_agent0 40 --type nn --model_agent0 path/to/saved_models/agent0.tar vs_gnubg --difficulty beginner --host GNUBG_HOST --port GNUBG_PORT
-
 ```
 The hidden units (`--hidden_units_agent0`) of the model must be same of the loaded model (`--model_agent0 `).
 
