@@ -154,10 +154,6 @@ Run `python /path/to/main.py plot --help` for a list of parameters available abo
 ## <a name="env"></a>Backgammon OpenAI Gym Environment
 For a detailed description of the environment: [`gym-backgammon`](https://github.com/dellalibera/gym-backgammon).
 
-
---- 
-### <a name="web_interface"></a>Web Interface
-
 ---
 ## <a name="biblio"></a>Bibliography, sources of inspiration, related works
 - TD-Gammon and Temporal Difference Learning:
