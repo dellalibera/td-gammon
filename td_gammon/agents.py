@@ -1,7 +1,6 @@
 import random
 import time
-from itertools import count, combinations_with_replacement
-from operator import itemgetter
+from itertools import count
 from random import randint, choice
 
 import numpy as np
@@ -83,69 +82,6 @@ class TDAgent(Agent):
             env.counter = tmp_counter
 
         return best_action
-
-
-# NOT TESTED WELL
-# class TDAgent2ply(TDAgent):
-#     def __init__(self, color, net):
-#         super().__init__(color, net)
-#
-#     def choose_best_action(self, actions, env):
-#         # https://www.gnu.org/software/gnubg/manual/html_node/The-depth-to-search-and-plies.html
-#         reverse = self.color == WHITE
-#         top_k = 3
-#         best_action = None
-#         dice = [-1, -2, -3, -4, -5, -6] if self.color == BLACK else [1, 2, 3, 4, 5, 6]
-#
-#         roll_combo = list(combinations_with_replacement(dice, 2))
-#
-#         if actions:
-#             values = [(0, 0.0)] * len(actions)
-#             state = env.game.save_state()
-#             for i, action in enumerate(actions):
-#                 observation, reward, done, info = env.step(action)
-#                 values[i] = (self.net(observation), action)
-#                 env.game.restore_state(state)
-#
-#             #  Rank the moves based on this evaluation
-#             values = sorted(values, key=itemgetter(0), reverse=reverse)
-#
-#             # chooses the best top_k moves
-#             best_actions = [a for (val, a) in values[:top_k]]
-#
-#             values = [0.0] * len(best_actions)
-#
-#             # For each selected action ...
-#             for i, action in enumerate(best_actions):
-#                 # Take the resulting position for that move ...
-#                 observation, reward, done, info = env.step(action)
-#
-#                 state1 = env.game.save_state()
-#
-#                 value = 0
-#
-#                 # set the opponent to be the current agent
-#                 env.current_agent = WHITE if self.color == BLACK else BLACK
-#
-#                 # Go through all 21 possible dice rolls for the opponent
-#                 for roll in roll_combo:
-#                     # From these results, it works out the average expectation for the initial move and ranks them.
-#                     p = 6 / 21 if roll[0] == roll[1] else 15 / 21
-#                     actions2 = env.get_valid_actions(roll)
-#                     if actions2:
-#                         for action2 in actions2:
-#                             observation, reward, done, info = env.step(action2)
-#                             value += p * self.net(observation)
-#                             env.game.restore_state(state1)
-#
-#                 values[i] = value
-#                 env.game.restore_state(state)
-#                 env.current_agent = self.color
-#
-#             best_action_index = int(np.argmax(values)) if self.color == WHITE else int(np.argmin(values))
-#             best_action = list(actions)[best_action_index]
-#
-#         return best_action
 
 
 # TD-GAMMON AGENT (play against gnubg) ================================================================
