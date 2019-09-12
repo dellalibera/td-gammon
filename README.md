@@ -61,7 +61,7 @@ git clone https://github.com/dellalibera/gym-backgammon.git
 cd gym-backgammon/
 pip3 install -e .
 ```
-In the examples belowe, if you don't use an Anaconda environment, replace `python` with `python3`.
+In the examples below, if you don't use an Anaconda environment, replace `python` with `python3`.
 
 
 ### GNU Backgammon
