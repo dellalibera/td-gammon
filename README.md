@@ -52,7 +52,7 @@ or
 (tdgammon) $ pip install -r requirements.txt
 ```
 
-If you don't Anaconda environment:
+If you don't use Anaconda environment:
 ```
 git clone https://github.com/dellalibera/td-gammon.git
 pip3 install -r td-gammon/requirements.txt
@@ -60,6 +60,7 @@ git clone https://github.com/dellalibera/gym-backgammon.git
 cd gym-backgammon/
 pip3 install -e .
 ```
+In the following commands, replace `python` with `python3`.
 
 ### GNU Backgammon
 To play against `gnubg`, you have to install [`gnubg`](https://www.gnu.org/software/gnubg/).  
