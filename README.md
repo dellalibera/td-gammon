@@ -52,6 +52,15 @@ or
 (tdgammon) $ pip install -r requirements.txt
 ```
 
+If you don't Anaconda environment:
+```
+git clone https://github.com/dellalibera/td-gammon.git
+pip3 install -r td-gammon/requirements.txt
+git clone https://github.com/dellalibera/gym-backgammon.git
+cd gym-backgammon/
+pip3 install -e .
+```
+
 ### GNU Backgammon
 To play against `gnubg`, you have to install [`gnubg`](https://www.gnu.org/software/gnubg/).  
 **NOTE**: I installed `gnubg` on `Ubuntu 18.04` (running on a Virtual Machine), with `Python 2.7` (see next section to see how to interact with GNU Backgammon).  
