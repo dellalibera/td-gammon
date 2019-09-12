@@ -52,7 +52,8 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         if self.path == '/':
             self._set_headers()
-            f = open("../td_gammon/web_gui/index.html").read()
+            # f = open("../td_gammon/web_gui/index.html").read()
+            f = open(os.path.dirname(__file__) + "/../web_gui/index.html").read()
 
             # RESET THE STATE EVERY TIME A NEW PAGE IS REFRESHED
             self.server.reset()
