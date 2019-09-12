@@ -171,6 +171,9 @@ class GnubgEnv:
     def set_difficulty(self):
         self.is_difficulty_set = True
 
+        self.gnubg_interface.send_command('set automatic roll off')
+        self.gnubg_interface.send_command('set automatic game off')
+
         if self.difficulty == 'beginner':
             self.gnubg_interface.send_command('set player gnubg chequer evaluation plies 0')
             self.gnubg_interface.send_command('set player gnubg chequer evaluation prune off')
