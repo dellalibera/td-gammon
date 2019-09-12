@@ -53,7 +53,7 @@ or
 ```
 
 ####  Without Anaconda Environment
-If you don't use Anaconda environment
+If you don't use Anaconda environment, run the following commands:
 ```
 git clone https://github.com/dellalibera/td-gammon.git
 pip3 install -r td-gammon/requirements.txt
