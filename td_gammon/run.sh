@@ -1,0 +1,5 @@
+python main.py evaluate --episodes 10 --hidden_units_agent0 40 --type nn --model_agent0 ./saved_models/exp1/exp1_20230925_1709_54_659534_10.tar vs_gnubg --difficulty beginner --host localhost --port 8001
+python main.py evaluate --episodes 10 --hidden_units_agent0 40 --type nn --model_agent0 ./saved_models/exp1_exp1_20230925_1709_54_659534_10.tar vs_gnubg --difficulty intermediate --host localhost --port 8001
+python main.py evaluate --episodes 10 --hidden_units_agent0 40 --type nn --model_agent0 ./saved_models/exp1/exp1_20230925_1709_54_659534_10.tar vs_gnubg --difficulty advanced --host localhost --port 8001
+python main.py evaluate --episodes 10 --hidden_units_agent0 40 --type nn --model_agent0 ./saved_models/exp1/exp1_20230925_1709_54_659534_10.tar vs_gnubg --difficulty world_class --host localhost --port 8001
+python main.py evaluate --episodes 10 --hidden_units_agent0 40 --type nn --model_agent0 ./saved_models/exp1/exp1_20230925_1709_54_659534_10.tar vs_gnubg --difficulty grand_master --host localhost --port 8001

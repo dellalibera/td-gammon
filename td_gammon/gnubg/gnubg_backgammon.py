@@ -236,7 +236,8 @@ class GnubgEnv:
 
 def evaluate_vs_gnubg(agent, env, n_episodes):
     wins = {WHITE: 0, BLACK: 0}
-
+    sta = time.time()
+    play_count = 0
     for episode in range(n_episodes):
         observation, first_roll = env.reset()
         t = time.time()
@@ -261,9 +262,14 @@ def evaluate_vs_gnubg(agent, env, n_episodes):
                 tot = wins[WHITE] + wins[BLACK]
 
                 print("EVAL => Game={:<6} {:>15} | Winner={} | after {:<4} plays || Wins: {}={:<6}({:<5.1f}%) | gnubg={:<6}({:<5.1f}%) | Duration={:<.3f} sec".format(
-                    episode + 1, '('+env.difficulty+')', info, env.gnubg.n_moves, agent.name, wins[WHITE], (wins[WHITE] / tot) * 100, wins[BLACK], (wins[BLACK] / tot) * 100, time.time() - t))
+                    episode + 1, '('+env.difficulty+')', info, env.gnubg.n_moves, agent.name, wins[WHITE], (wins[WHITE] / tot) *  100, wins[BLACK], (wins[BLACK] / tot) * 100, time.time() - t))
+                play_count += env.gnubg.n_moves
                 break
             observation = observation_next
 
+    end = time.time()
+    # print average time
+    print("Average time per game: ", (end - sta) / n_episodes)
+    print("Average number of plays per game: ", play_count / n_episodes)
     env.gnubg_interface.send_command("new session")
     return wins

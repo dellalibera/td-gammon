@@ -37,7 +37,7 @@ if __name__ == '__main__':
     parser_gnubg = subparsers_gnubg.add_parser('vs_gnubg', help='Evaluate agent0 against gnubg', formatter_class=lambda prog: formatter(prog))
     parser_gnubg.add_argument('--host', help='Host running gnubg', type=str, required=True)
     parser_gnubg.add_argument('--port', help='Port listening for gnubg commands', type=int, required=True)
-    parser_gnubg.add_argument('--difficulty', help='Difficulty level', choices=['beginner', 'intermediate', 'advanced', 'world_class'], type=str, required=False, default='beginner')
+    parser_gnubg.add_argument('--difficulty', help='Difficulty level', choices=['beginner', 'intermediate', 'advanced', 'grand_master', 'world_class'], type=str, required=False, default='beginner')
 
     parser_gnubg.set_defaults(func=utils.args_gnubg)
     parser_evaluate.set_defaults(func=utils.args_evaluate)

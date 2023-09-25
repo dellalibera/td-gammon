@@ -167,10 +167,9 @@ def evaluate_agents(agents, env, n_episodes):
                 tot = wins[WHITE] + wins[BLACK]
                 tot = tot if tot > 0 else 1
 
-                print("EVAL => Game={:<6d} | Winner={} | after {:<4} plays || Wins: {}={:<6}({:<5.1f}%) | {}={:<6}({:<5.1f}%) | Duration={:<.3f} sec".format(episode + 1, winner, i,
+                print("EVAL => Game={:<6d} | Winner={} | after {:<4} plays || Wins: {}={:<6}({:<5.1f}%) | {}={:<6}({:<5.1f}%) | Duration={:<.3f} sec| Length={}".format(episode + 1, winner, i,
                     agents[WHITE].name, wins[WHITE], (wins[WHITE] / tot) * 100,
-                    agents[BLACK].name, wins[BLACK], (wins[BLACK] / tot) * 100, time.time() - t))
-                break
+                    agents[BLACK].name, wins[BLACK], (wins[BLACK] / tot) * 100, time.time() - t), i)
 
             agent_color = env.get_opponent_agent()
             agent = agents[agent_color]
