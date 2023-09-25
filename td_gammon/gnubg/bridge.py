@@ -2,8 +2,8 @@
 # IT USES PYTHON 2.7
 
 import gnubg
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-# from http.server import BaseHTTPRequestHandler, HTTPServer
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 try:
@@ -58,7 +58,7 @@ class Handler(BaseHTTPRequestHandler):
                 )
 
         self._set_headers()
-        self.wfile.write(json.dumps(response))
+        self.wfile.write(json.dumps(response).encode(encoding='utf_8'))
 
     def do_GET(self):
         parsed = urlparse(self.path)
