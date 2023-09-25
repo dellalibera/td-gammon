@@ -2,7 +2,6 @@ import random
 import time
 from itertools import count
 from random import randint, choice
-
 import numpy as np
 from gym_backgammon.envs.backgammon import WHITE, BLACK, COLORS
 
@@ -69,7 +68,7 @@ class TDAgent(Agent):
             # Iterate over all the legal moves and pick the best action
             for i, action in enumerate(actions):
                 observation, reward, done, info = env.step(action)
-                values[i] = self.net(observation)
+                values[i] = self.net(observation).detach().numpy()[0]
 
                 # restore the board and other variables (undo the action)
                 env.game.restore_state(state)
@@ -109,7 +108,7 @@ class TDAgentGNU(TDAgent):
                 game.execute_play(self.color, action)
                 opponent = game.get_opponent(self.color)
                 observation = game.get_board_features(opponent) if env.model_type == 'nn' else env.render(mode='state_pixels')
-                values[i] = self.net(observation)
+                values[i] = self.net(observation).detach().numpy()[0]
                 game.restore_state(state)
 
             best_action_index = int(np.argmax(values)) if self.color == WHITE else int(np.argmin(values))
@@ -142,7 +141,7 @@ class TDAgentGNU(TDAgent):
 
 def evaluate_agents(agents, env, n_episodes):
     wins = {WHITE: 0, BLACK: 0}
-
+    sta = time.time()
     for episode in range(n_episodes):
 
         agent_color, first_roll, observation = env.reset()

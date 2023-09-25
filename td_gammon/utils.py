@@ -48,17 +48,18 @@ def args_train(args):
     if model_type == 'nn':
         net = TDGammon(hidden_units=hidden_units, lr=lr, lamda=lamda, init_weights=init_weights, seed=seed)
         eligibility = True
-        env = gym.make('gym_backgammon:backgammon-v0')
+        env = gym.make('backgammon-v0')
 
     else:
         net = TDGammonCNN(lr=lr, seed=seed)
         optimizer = True
-        env = gym.make('gym_backgammon:backgammon-pixel-v0')
-
+        env = gym.make('backgammon-pixel-v0')
+    
     if args.model and path_exists(args.model):
         # assert os.path.exists(args.model), print("The path {} doesn't exists".format(args.model))
         net.load(checkpoint_path=args.model, optimizer=optimizer, eligibility_traces=eligibility)
 
+    os.makedirs(args.save_path, exist_ok=True)
     if args.save_path and path_exists(args.save_path):
         # assert os.path.exists(args.save_path), print("The path {} doesn't exists".format(args.save_path))
         save_path = args.save_path
